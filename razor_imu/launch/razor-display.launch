@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="razor_imu" type="display_3D_visualization.py" name="display_3D_visualization_node" output="screen">
+  </node>
+  <node pkg="razor_imu" type="display_3D_visualization_car_data.py" name="display_3D_visualization_car_data_node" output="screen">
+  </node>
+</launch>
