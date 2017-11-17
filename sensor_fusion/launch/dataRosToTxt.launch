@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="sensor_fusion" type="imuMsgToTxt.py" name="imuMsgToTxt_node" output="screen"/>
+  <node pkg="sensor_fusion" type="poseupdateMsgToTxt.py" name="poseupdateMsgToTxt_node" output="screen"/>
+</launch>
