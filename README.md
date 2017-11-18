@@ -12,23 +12,25 @@ Main idea.  Package [hector_mapping](http://wiki.ros.org/hector_mapping) with in
 
 ## Test environment
 The test environment was built for collecting data. All blocks have a standard length of 0.3m. The main contour has a rectangular shape. In this way, we can calculate the positions of the robot from the onboard camera.
-short video
 ###### short video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/rrM2ilHYsvM/0.jpg)](https://www.youtube.com/watch?v=rrM2ilHYsvM)
 
 ## Datasets
-[Google drive link to datasets](https://drive.google.com/drive/folders/1Y8_DFJUcuB-nSq_NuDmEkCzxAicApLjp?usp=sharing) - download it to repository folder.
+[Google drive link to datasets](https://drive.google.com/drive/folders/1Y8_DFJUcuB-nSq_NuDmEkCzxAicApLjp?usp=sharing) - download it to the repository folder.
 ##### 2017-11-12-20-18-43.bag - dataset_1 for sensor fusion. LIDAR + IMU(default calibration).
 ###### short video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/lVSDDgokX3g/0.jpg)](https://www.youtube.com/watch?v=lVSDDgokX3g)
 
 Raw data about yaw from lidar(blue) and from IMU(red). There are radians along the y-axis and time in seconds along the x-axis.
+
 ![graph 1](http://filipenko.biz/wp-content/uploads/2017/11/figure_1.png)
 
 ##### 2017-11-14-21-53-47.bag - dataset_2 for sensor fusion. LIDAR + IMU(calibrated).
-
+###### short video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/PBC5dq39bkE/0.jpg)](https://www.youtube.com/watch?v=PBC5dq39bkE)
+
 Raw data about yaw from lidar(blue) and from IMU(red). There are in radians along the y-axis and time in seconds along the x-axis.
+
 ![graph 2](http://filipenko.biz/wp-content/uploads/2017/11/figure_2-1.png)
 
 ## 9DOF Razor IMU calibration
@@ -125,19 +127,22 @@ float64[36] covariance
 #### /gyro data
 |![gyro_wz](http://filipenko.biz/wp-content/uploads/2017/11/gyro_wz.png) angular_velocity wz(t) - raw data|   ![gyro_wz_integral](http://filipenko.biz/wp-content/uploads/2017/11/gyro_wz_integral.png) yaw(t) - numerical first integral| 
 |---|---|
-|![gyro_wz_integral_normalization](http://filipenko.biz/wp-content/uploads/2017/11/gyro_wz_integral_normalization.png)  yaw(t) - numerical first integral normalization| |  
+|![gyro_wz_integral_normalization](http://filipenko.biz/wp-content/uploads/2017/11/gyro_wz_integral_normalization.png)  yaw(t) - numerical first integral with normalization| |  
 #### /magnetometer data
 ![magnetometer_yaw](http://filipenko.biz/wp-content/uploads/2017/11/magnetometer_yaw.png)
+
 yaw(t) - raw data
 
 ### Data for sensor fusion
 It is no way to fuse (x,y) data as two times integrated acceleration data has a different order compare with lidar odom data. But we have information about yaw from three different sensors. 
 ![magnetometer_yaw](http://filipenko.biz/wp-content/uploads/2017/11/yaw_mag_lidar_acc.png)
+
 yaw(t) (normalized). red - data from magnetometer, blue - data from hector_SLAM , green - data from the gyro (integrated).
 
-## Results 
-|![Kalman_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Kalman_filter.png?raw=true)yaw(t) (normalized). Yellow - data fused with Kalman filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).|
+## Results of Sensor Fusion
+|yaw(t)|
 |---|
+|![Kalman_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Kalman_filter.png?raw=true)yaw(t) (normalized). Yellow - data fused with Kalman filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).|
 |![Extended_Kalman_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Extended_Kalman_filter.png?raw=true) yaw(t) (normalized). Yellow - data fused with Extended Kalman filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).| 
 |![Partical_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Partical_filter.png?raw=true) yaw(t) (normalized). Yellow - data fused with Particle filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).| 
 The result is completely in line with expectations. The fused data lies between data from sensors.
