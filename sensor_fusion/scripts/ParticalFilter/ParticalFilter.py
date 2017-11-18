@@ -167,7 +167,7 @@ yaw_lidar = yaw_lidar_f[:, 1]
 
 print("### Partical filter ###")
 
-seed(2)
+seed(1)
 yaw = ParticalFilter(N=1000, gyro=yaw_gyro, mag=yaw_mag, lidar=yaw_lidar, wYaw=wYaw_gyro, t=t_gyro)
 
 f_plot(t_mag, yaw_mag, t_gyro, yaw_gyro, t_lidar, yaw_lidar, t_lidar, yaw, colors=colors, linewidth=2.)

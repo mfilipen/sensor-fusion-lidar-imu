@@ -1,34 +1,43 @@
-# Sesor fusion
+# Sensor fusion
 
 This repository contains the following packages 
  * racecar_description - it is for rendering the dimensional model of the car in RViz
  * razor_imu - it is for visualizing data from [9 Degrees of Freedom - Razor IMU](https://www.sparkfun.com/products/retired/10736)
- * sensor_fusion - it is for fusing odometry data and data IMU data.
+ * sensor_fusion - it is for fusing lidar odometry data and IMU data.
+    *  /sensor_fusion/scripts/KalmanFilter/ - sensor fusion with Kalman filter
+    *  /sensor_fusion/scripts/ExtendedKalmanFilter/ - sensor fusion with Extended Kalman Filter
+    *  /sensor_fusion/scripts/ParticalFilter/ - sensor fusion with Partical Filter
 
-Main idea.  Package [hector_mapping](http://wiki.ros.org/hector_mapping) with information from [2D lidar](http://wiki.ros.org/hokuyo_node) provides a two-dimensional map and robot pose (x, y, yaw). When the position of the monitored object changes along the z axis, the algorithm loses localization. The idea of using additional information from other sensors seems interesting. First, data from lidar about orientation (x,y,yaw) and data from magnetrometr (yaw).
+Main idea.  Package [hector_mapping](http://wiki.ros.org/hector_mapping) with information from [2D lidar](http://wiki.ros.org/hokuyo_node) provides a two-dimensional map and robot pose (x, y, yaw). When the position of the monitored object changes along the z-axis, the algorithm loses localization. The idea of using additional information from other sensors seems interesting. First, data from lidar about orientation (x, y, yaw) and data from magnetometer (yaw) will be fused.
 
-## Test enviroment
-Test environment was built for collecting data. All blocks have a standard length of 0.3m. The main contour has a rectangular shape. In this way, we can calculate the positions of the robot from the on-board camera.
+## Test environment
+The test environment was built for collecting data. All blocks have a standard length of 0.3m. The main contour has a rectangular shape. In this way, we can calculate the positions of the robot from the onboard camera.
+short video
+###### short video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/rrM2ilHYsvM/0.jpg)](https://www.youtube.com/watch?v=rrM2ilHYsvM)
 
 ## Datasets
 [Google drive link to datasets](https://drive.google.com/drive/folders/1Y8_DFJUcuB-nSq_NuDmEkCzxAicApLjp?usp=sharing) - download it to repository folder.
 ##### 2017-11-12-20-18-43.bag - dataset_1 for sensor fusion. LIDAR + IMU(default calibration).
+###### short video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/lVSDDgokX3g/0.jpg)](https://www.youtube.com/watch?v=lVSDDgokX3g)
-Raw data about yaw from lidar(blue) and from IMU(red). There are radians along the y axis and time in seconds along x-axis.
+
+Raw data about yaw from lidar(blue) and from IMU(red). There are radians along the y-axis and time in seconds along the x-axis.
 ![graph 1](http://filipenko.biz/wp-content/uploads/2017/11/figure_1.png)
 
 ##### 2017-11-14-21-53-47.bag - dataset_2 for sensor fusion. LIDAR + IMU(calibrated).
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/PBC5dq39bkE/0.jpg)](https://www.youtube.com/watch?v=PBC5dq39bkE)
-Raw data about yaw from lidar(blue) and from IMU(red). There are in radians along the y axis and time in seconds along x-axis .
+Raw data about yaw from lidar(blue) and from IMU(red). There are in radians along the y-axis and time in seconds along the x-axis.
 ![graph 2](http://filipenko.biz/wp-content/uploads/2017/11/figure_2-1.png)
 
 ## 9DOF Razor IMU calibration
-I found that default calibration does not provide enough precise information (we can see it from first dataset). It was nesesary to do calibration before fusing data. The procedure of calibration was done how it was described [here](http://wiki.ros.org/razor_imu_9dof). I had a lot of problems with installation of programs for calibration on Jetson TX1 (which is used as the basis for the robot). It is was found that there is problem with running Oracle Java (which is requred for run calibration software) on Jetson TX1 (last version which I tryed - [Linux ARM 64 Hard Float ABI](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)). Finally, calibration was done using another computer.
+I found that default calibration does not provide enough precise information (we can see it from the first dataset). It was necessary to do calibration before fusing data. The procedure of calibration was done how it was described [here](http://wiki.ros.org/razor_imu_9dof). I had a lot of problems with the installation of programs for calibration on Jetson TX1 (which is used as the basis for the robot). It is was found that there is a problem with running Oracle Java (which is required for run calibration software) on Jetson TX1 (last version which I tried - [Linux ARM 64 Hard Float ABI](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)). Finally, calibration was done using another computer.
+###### short video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6SqMOvdJ9xU/0.jpg)](https://www.youtube.com/watch?v=6SqMOvdJ9xU)
 
-## Runnig datasets
-[ROS Kinetic Kame](http://wiki.ros.org/kinetic) is used for collecting and run datasets.
+## Running datasets
+[ROS Kinetic Kame](http://wiki.ros.org/kinetic) was used for collecting and run datasets.
 #### Console 1
 Run ROS master
 ```bash
@@ -121,5 +130,14 @@ float64[36] covariance
 ![magnetometer_yaw](http://filipenko.biz/wp-content/uploads/2017/11/magnetometer_yaw.png)
 yaw(t) - raw data
 
+### Data for sensor fusion
+It is no way to fuse (x,y) data as two times integrated acceleration data has a different order compare with lidar odom data. But we have information about yaw from three different sensors. 
+![magnetometer_yaw](http://filipenko.biz/wp-content/uploads/2017/11/yaw_mag_lidar_acc.png)
+yaw(t) (normalized). red - data from magnetometer, blue - data from hector_SLAM , green - data from the gyro (integrated).
 
-
+## Results 
+|![Kalman_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Kalman_filter.png?raw=true)yaw(t) (normalized). Yellow - data fused with Kalman filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).|
+|---|
+|![Extended_Kalman_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Extended_Kalman_filter.png?raw=true) yaw(t) (normalized). Yellow - data fused with Extended Kalman filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).| 
+|![Partical_filter](https://github.com/mfilipen/sensor_fusion_lidar_IMU/blob/master/Partical_filter.png?raw=true) yaw(t) (normalized). Yellow - data fused with Particle filter from sensors, red - data from magnetometer, blue - data from hector_SLAM , green - data from gyro (integrated).| 
+The result is completely in line with expectations. The fused data lies between data from sensors.
